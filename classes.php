@@ -6,8 +6,6 @@ abstract class User {
 
     public $accessRights;
 
-    abstract public function getFullname();
-
     abstract public function getAccessRights();
 
 }
@@ -20,7 +18,14 @@ class TeamLead extends  User {
        $this->surame=$surname;
        $this->accessRights=$accessRights;
     }
+
+    public function getAccessRights(){
+        $access = ["director" => "all","teamlead"=>"only orders", "supplier" => "only orders", "worker" => "without access"];
+        foreach ($access as $key => $value) {
+            echo $access[ "teamlead" ];
+        }
     }
+}
 
     function getFullname(){
         return  $this->name.''.$this->surname;
@@ -31,37 +36,40 @@ class TeamLead extends  User {
     function make_order(){
         return $this->orderBlank;
     }
-    function workPlan(){
-         return this->
+    function list_of_workers($list_of_workers){
+     $this->$list_of_workers;
+    }
+    function workPlan($workPlan){
+        $this->$workPlan;
+        }
+
 //	Stockman
-interface FullName
-{
-    public function getFullName();
-}
+//interface FullName
+//{
+//    public function getFullName();
+//}
+//
+//interface FullNameAccess extends FullName
+//{
+//    public function getAccessRights();
+//}
 
-interface FullNameAccess extends FullName
-{
-    public function getAccessRights();
-}
-
-
-abstract class User
-{
-    public $fullName, $accessRights;
-}
 
 class Supplier extends User implements FullNameAccess
 {
     protected $order;
-
-    public function getFullName()
+    public $name,$surname,$age,$address;
+    function __construct($name, $surname,$age,$address)
     {
-        return $this->fullName . "\n";
+        $this->fullName = $name;
+        $this->fullSurname=$surname;
+        $this->age = $age;
+        $this->address=$address;
     }
 
     public function getAccessRights()
     {
-        $access = ["director" => "all", "supplier" => "only orders", "worker" => "without access"];
+        $access = ["director" => "all","teamlead"=>"only orders", "supplier" => "only orders", "worker" => "without access"];
         foreach ($access as $key => $value) {
             echo $access[ "supplier" ];
         }
@@ -70,6 +78,11 @@ class Supplier extends User implements FullNameAccess
     function do_order($order)
     {
         $this->order = $order; //with Vlasta?
+    }
+
+    public function getFullname()
+    {
+        // TODO: Implement getFullname() method.
     }
 }
 
