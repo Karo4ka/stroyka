@@ -1,15 +1,18 @@
 <?php
 
-abstract class User {
+abstract class User
+{
 
-    public $fullname;
+    public $fullName;
 
     public $accessRights;
 
     abstract public function getAccessRights();
-
 }
-class TeamLead extends  User {
+
+
+class TeamLead extends User
+{
     public $accessRights;
     public  $name;
     public  $surname;
@@ -26,22 +29,30 @@ class TeamLead extends  User {
         }
     }
 }
+    public function __construct($name, $surname, $accessRights)
+    {
+        $this->name         = $name;
+        $this->surName      = $surname;
+        $this->accessRights = $accessRights;
+    }
 
-    function getFullname(){
-        return  $this->name.''.$this->surname;
+    public function getFullName()
+    {
+        return $this->name . '' . $this->surName;
     }
-    function getAccessRights(){
-        return  $this->accessRights;
-    }
-    function make_order(){
-        return $this->orderBlank;
-    }
+
     function list_of_workers($list_of_workers){
      $this->$list_of_workers;
     }
     function workPlan($workPlan){
         $this->$workPlan;
         }
+
+    public function getAccessRights()
+    {
+        return $this->accessRights;
+    }
+}
 
 //	Stockman
 //interface FullName
@@ -55,7 +66,7 @@ class TeamLead extends  User {
 //}
 
 
-class Supplier extends User implements FullNameAccess
+class Supplier extends User
 {
     protected $order;
     public $name,$surname,$age,$address;
@@ -74,10 +85,18 @@ class Supplier extends User implements FullNameAccess
             echo $access[ "supplier" ];
         }
     }
-
-    function do_order($order)
+    protected $age = 10;
+    function __construct($name, $accessRights = User::WORKER)
     {
-        $this->order = $order; //with Vlasta?
+        $this->fullName     = $name;
+        $this->accessRights = $accessRights;
+    }
+
+    public $fullName, $accessRights;
+
+    public function __toString()
+    {
+        return $this->fullName . PHP_EOL;
     }
 
     public function getFullname()
@@ -86,50 +105,62 @@ class Supplier extends User implements FullNameAccess
     }
 }
 
-Class Director extends User
-{
-
-    function __construct($name, array $accessRights)
+    public function __call($name, $arguments)
     {
-        $this->fullName     = $name;
-        $this->accessRights = $accessRights;
+        $vars    = get_object_vars($this);
+        $varName = lcfirst(substr($name, 3));
+        if ((substr($name, 0, 3) === 'get') && (array_key_exists($varName, $vars))) {
+            return $this->$varName . PHP_EOL;
+        }
     }
 
     public function getFullName()
     {
-        return $this->fullName;
+        // TODO Дописать метод getFullName, потому что он абстрактный
     }
 
     public function getAccessRights()
     {
-        return $this->accessRights;
-    }
-
-    public function setFullName($name)
-    {
-        if (gettype($name) === 'string') {
-            $this->fullName = $name;
-        }
-    }
-
-    public function setAccessRights(array $rights)
-    {
-        $this->accessRights = $rights;
+        // TODO Дописать метод getFullName, потому что он абстрактный
     }
 }
 
-$director = new Director('Like A Boss', ['director']);
-$supplier = new Supplier();
-$supplier->fullName = 'Nikita';
-$supplier->accessRights = 'supplier';
+Class Director extends User
+{
+    /*
+     * __CALL
+     */
+    public function __call($name, $arguments)
+    {
+        // Замечание: значение $name регистрозависимо.
+        echo "Вызов метода '$name' " . implode(', ', $arguments) . "\n";
+        $this->fullName = $arguments[ 0 ];
+    }
+    /*
+     * GET
+     */
+    public function getFullName()
+    {
+        // TODO Дописать метод getFullName, потому что он абстрактный
+    }
 
-$persons[] = $director;
+    public function getAccessRights()
+    {
+        // TODO Дописать метод getFullName, потому что он абстрактный
+    }
+}
+
+$supplier = new Supplier('Nikita', 'supplier');
+
+print $supplier->getAge();
+
 $persons[] = $supplier;
 
-foreach ($persons as $person)
-{
-    echo $person->getFullName().PHP_EOL;
+/*
+foreach ($persons as $person) {
+    echo $person->fullName;
 }
+*/
 
 
 /*
@@ -169,5 +200,5 @@ Instrument Denis
 
 Material Gleb
 
-Mechanizm  Maxim
+*/
 
